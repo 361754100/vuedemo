@@ -1,5 +1,6 @@
 <template>
     <div id="test-module" class="test-module-div">
+        <img src="../assets/logo.png">
         <p>组件测试。。。</p>
     </div>
 </template>

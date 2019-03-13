@@ -1,17 +1,22 @@
 <template>
   <!--设置container高度占比100%-->
   <el-container style="height: 100%;min-height:100vh;" >
-      <el-aside width="auto" style="background-color: #545c64; border-right: solid 1px #e6e6e6;">
-        <el-row style="background-color: #545c64; color: #fff;">
+    <el-header>Header</el-header>
+    <el-container>
+      <el-aside width="auto">
+        <!--<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+          <el-radio-button :label="false">展开</el-radio-button>
+          <el-radio-button :label="true">收起</el-radio-button>
+        </el-radio-group>-->
+
+        <el-row style="background-color: white; ">
           <el-col :span="24">
-            <div id="collapse-btn-div"  :title="collapseTitle" v-model="isCollapse" :class="{'btn-expand': !isCollapse, 'btn-collapse': isCollapse} " v-on:click="handleExpandBtn" v-on:mouseenter="handleExpandMouseOn" v-on:mouseleave="handleExpandMouseLeave">
-              <i :class="{'el-icon-d-arrow-left': !isCollapse, 'el-icon-d-arrow-right': isCollapse, 'collapse-mouse-on':isMouseOn} " v-model="isMouseOn"></i>
+            <div id="collapse-btn-div"  :title="collapseTitle" v-model="isCollapse" :class="{'btn-expand': !isCollapse, 'btn-collapse': isCollapse} " v-on:click="handleExpandBtn">
+              <i :class="{'el-icon-d-arrow-left': !isCollapse, 'el-icon-d-arrow-right': isCollapse} "></i>
             </div>
           </el-col>
         </el-row>
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-                 style="border: none;"
-                 background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :collapse="isCollapse">
+        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
           <!--<el-menu-item index="1" style="height: 25px; line-height: 25px;">
             <div id="collapse-btn-div">
               <i class="el-icon-caret-left" v-model="isCollapse" ></i>
@@ -49,16 +54,13 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-container>
-        <el-header>Header</el-header>
-        <el-main>
-          <div id="main-div" >
-            <!--<v-hello></v-hello>-->
-            <v-test></v-test>
-          </div>
-        </el-main>
-      </el-container>
-
+      <el-main>
+        <div id="main-div" >
+          <!--<v-hello></v-hello>-->
+          <v-test></v-test>
+        </div>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
@@ -73,9 +75,8 @@
         },
         data() {
           return {
-            isCollapse: true,
-            isMouseOn: false,
-            collapseTitle: '展开'
+            isCollapse: false,
+            collapseTitle: '收起'
           };
         },
         methods: {
@@ -93,12 +94,6 @@
               this.isCollapse = false;
               this.collapseTitle = '收起';
             }
-          },
-          handleExpandMouseOn(){
-            this.isMouseOn = true;
-          },
-          handleExpandMouseLeave() {
-            this.isMouseOn = false;
           }
         }
     }
@@ -156,14 +151,12 @@
     height: 30px;
     line-height: 30px;
     float: right;
+    border-right: solid 1px #e6e6e6;
   }
   .btn-expand {
     width: 53px;
   }
   .btn-collapse {
     width: 63px;
-  }
-  .collapse-mouse-on {
-    color: #ffd04b
   }
 </style>

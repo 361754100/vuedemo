@@ -4,17 +4,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-import { Button, Select, Container, Main, Aside, Header } from 'element-ui'
+// import { Button, Select, Container, Main, Aside, Header } from 'element-ui'
+import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.config.productionTip = false
 
-Vue.use(Button)
-Vue.use(Select)
-Vue.use(Container)
-Vue.use(Main)
-Vue.use(Aside)
-Vue.use(Header)
+Vue.use(ElementUI)
 
 /* eslint-disable no-new */
 new Vue({

@@ -12,11 +12,6 @@
         <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
                  style="border: none;"
                  background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :collapse="isCollapse">
-          <!--<el-menu-item index="1" style="height: 25px; line-height: 25px;">
-            <div id="collapse-btn-div">
-              <i class="el-icon-caret-left" v-model="isCollapse" ></i>
-            </div>
-          </el-menu-item>-->
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -151,6 +146,9 @@
     min-height: 400px;
   }
 
+  /**
+    折叠按钮的样式
+   */
   #collapse-btn-div {
     display: block;
     height: 30px;

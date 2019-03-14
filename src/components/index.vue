@@ -48,7 +48,7 @@
         <el-header style="background-color: white ; border-bottom: solid 1px #e6e6e6; padding: 0px 10px 0px 10px;">
 
         </el-header>
-        <el-main>
+        <el-main style="padding-top: 1px;">
           <div id="main-div">
             <el-tabs v-model="indexTabsValue"  type="border-card" closable @tab-remove="removeTab">
               <el-tab-pane
@@ -235,6 +235,6 @@
     line-height: 30px;
   }
   .el-tabs> .el-tabs__content {
-    padding: 3px 0px 0px 0px;
+    padding: 2px 0px 0px 0px;
   }
 </style>

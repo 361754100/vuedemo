@@ -45,11 +45,25 @@
         </el-menu>
       </el-aside>
       <el-container>
-        <el-header>Header</el-header>
+        <el-header style="background-color: white ; border-bottom: solid 1px #e6e6e6; padding: 0px 10px 0px 10px;">
+
+        </el-header>
         <el-main>
-          <div id="main-div" >
+          <div id="main-div">
+            <el-tabs v-model="indexTabsValue"  type="border-card" closable @tab-remove="removeTab">
+              <el-tab-pane
+                v-for="(item, index) in indexTabs"
+                :key="item.name"
+                :label="item.title"
+                :name="item.name"
+                class="el-tabs__content"
+              >
+                <component v-bind:is="item.component"></component>
+              </el-tab-pane>
+            </el-tabs>
             <!--<v-hello></v-hello>-->
-            <v-test></v-test>
+            <!--<v-test></v-test>-->
+            <!--<v-bmap></v-bmap>-->
           </div>
         </el-main>
       </el-container>
@@ -60,17 +74,30 @@
 <script>
   import vTest from './test.vue'
   import vHello from './HelloWorld.vue'
+  import vBmap from './bmap.vue'
     export default {
         name: "index",
         components: {
           vTest,
-          vHello
+          vHello,
+          vBmap
         },
         data() {
           return {
             isCollapse: true,
             isMouseOn: false,
-            collapseTitle: '展开'
+            collapseTitle: '展开',
+            indexTabsValue: '1',
+            indexTabs: [{
+              title: '首页',
+              name: '1',
+              component: vBmap
+            }, {
+              title: 'Tab 2',
+              name: '2',
+              component: vTest
+            }],
+            tabIndex: 1
           };
         },
         methods: {
@@ -94,6 +121,31 @@
           },
           handleExpandMouseLeave() {
             this.isMouseOn = false;
+          },
+          addTab(targetName) {
+            let newTabName = ++this.tabIndex + '';
+            this.indexTabs.push({
+              title: 'New Tab',
+              name: newTabName,
+              component: vBmap
+            });
+            this.indexTabsValue = newTabName;
+          },
+          removeTab(targetName) {
+            let tabs = this.indexTabs;
+            let activeName = this.indexTabsValue;
+            if (activeName === targetName) {
+              tabs.forEach((tab, index) => {
+                if (tab.name === targetName) {
+                  let nextTab = tabs[index + 1] || tabs[index - 1];
+                  if (nextTab) {
+                    activeName = nextTab.name;
+                  }
+                }
+              });
+            }
+            this.indexTabsValue = activeName;
+            this.indexTabs = tabs.filter(tab => tab.name !== targetName);
           }
         }
     }
@@ -118,7 +170,7 @@
     color: #333;
     text-align: center;
     line-height: 160px;
-    padding:5px;
+    padding:2px 1px 0px 0px;
   }
 
   body > .el-container {
@@ -163,5 +215,26 @@
   }
   .collapse-mouse-on {
     color: #ffd04b
+  }
+</style>
+<style>
+  /** Tab组件样式**/
+  .el-tabs {
+    height: 30px;
+    line-height: 30px;
+  }
+  .el-tabs__header {
+    padding: 0;
+    position: relative;
+    margin: 0 0 0px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .el-tabs__item {
+    height: 30px;
+    line-height: 30px;
+  }
+  .el-tabs> .el-tabs__content {
+    padding: 3px 0px 0px 0px;
   }
 </style>

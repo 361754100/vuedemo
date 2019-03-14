@@ -46,7 +46,13 @@
       </el-aside>
       <el-container>
         <el-header style="background-color: white ; border-bottom: solid 1px #e6e6e6; padding: 0px 10px 0px 10px;">
-
+          <div id="sys-logo">
+            <img src="../assets/logo_2.png"/>
+          </div>
+          <div id="user-banner">
+            <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button type="primary" icon="el-icon-service" circle></el-button>
+          </div>
         </el-header>
         <el-main style="padding-top: 1px;">
           <div id="main-div">
@@ -157,6 +163,23 @@
     color: #333;
     text-align: center;
     line-height: 60px;
+  }
+
+  #sys-logo {
+    display: block;
+    float: left;
+    width: 390px;
+    height: 59px;
+    line-height: 59px;
+    overflow: hidden;
+  }
+
+  #user-banner {
+    display: block;
+    min-width: 200px;
+    height: 59px;
+    float: right;
+    text-align: right;
   }
 
   .el-aside {

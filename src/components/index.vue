@@ -51,7 +51,7 @@
           </div>
           <div id="user-banner">
             <el-button type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button type="primary" icon="el-icon-service" circle></el-button>
+            <el-button type="primary" icon="el-icon-thd-wode" circle></el-button>
           </div>
         </el-header>
         <el-main style="padding-top: 1px;">

@@ -30,8 +30,8 @@
               <el-menu-item index="1-4-1">选项1</el-menu-item>
             </el-submenu>
           </el-submenu>
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
+          <el-menu-item index="2" @click="handleMenuBtnClick(3,'车辆管理')">
+            <i class="el-icon-thd--cheliang"></i>
             <span slot="title">导航二</span>
           </el-menu-item>
           <el-menu-item index="3" disabled>
@@ -50,7 +50,7 @@
             <img src="../assets/logo_2.png"/>
           </div>
           <div id="user-banner">
-            <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button icon="el-icon-thd-tongzhi" circle></el-button>
             <el-button type="primary" icon="el-icon-thd-wode" circle></el-button>
           </div>
         </el-header>
@@ -81,12 +81,14 @@
   import vTest from './test.vue'
   import vHello from './HelloWorld.vue'
   import vBmap from './bmap.vue'
+  import vCarManagement from './CarManagement.vue'
     export default {
         name: "index",
         components: {
           vTest,
           vHello,
-          vBmap
+          vBmap,
+          vCarManagement
         },
         data() {
           return {
@@ -103,7 +105,7 @@
               name: '2',
               component: vTest
             }],
-            tabIndex: 1
+            tabIndex: 2
           };
         },
         methods: {
@@ -128,12 +130,31 @@
           handleExpandMouseLeave() {
             this.isMouseOn = false;
           },
-          addTab(targetName) {
-            let newTabName = ++this.tabIndex + '';
+          handleMenuBtnClick(menuId, menuName) {
+            switch (menuId) {
+              case 1:
+                break;
+              case 3: this.addTab(menuId, menuName, vCarManagement);
+                break;
+              default: break;
+            }
+          },
+          addTab(targetId, targetName, targetComponent) {
+            let tabLength = this.indexTabs.length;
+            for(let i = 0; i < tabLength; i++) {
+              let tempTab = this.indexTabs[i];
+
+              if(targetId == tempTab.name) {
+                return;
+              }
+            }
+
+            let newTabName = targetId + '';
+            // let newTabName = ++this.tabIndex + '';
             this.indexTabs.push({
-              title: 'New Tab',
+              title: targetName,
               name: newTabName,
-              component: vBmap
+              component: targetComponent
             });
             this.indexTabsValue = newTabName;
           },
@@ -189,7 +210,6 @@
   }
 
   .el-main {
-    background-color: #E9EEF3;
     color: #333;
     text-align: center;
     line-height: 160px;

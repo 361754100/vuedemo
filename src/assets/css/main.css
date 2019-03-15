@@ -1,0 +1,16 @@
+/**
+按钮、查询面板
+ */
+.main-tool-bar-div {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 5px;
+}
+
+/**
+分页控件DIV
+ */
+.page-tool-bar-div{
+  float: right;
+}

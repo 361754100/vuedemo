@@ -50,6 +50,7 @@
             <img src="../assets/logo_2.png"/>
           </div>
           <div id="user-banner">
+            <label style="font-family: '微软雅黑 Light'; margin-right: 15px;">{{timeStamp | formatDate}}</label>
             <el-button icon="el-icon-thd-tongzhi" circle></el-button>
             <el-button type="primary" icon="el-icon-thd-wode" circle></el-button>
           </div>
@@ -82,6 +83,11 @@
   import vHello from './HelloWorld.vue'
   import vBmap from './bmap.vue'
   import vCarManagement from './CarManagement.vue'
+
+  // 在月份、日期、小时等小于10 时前面补0
+  var padDate = function (value ) {
+    return value < 10 ? '0' + value : value;
+  }
     export default {
         name: "index",
         components: {
@@ -94,6 +100,7 @@
           return {
             isCollapse: true,
             isMouseOn: false,
+            timeStamp: new Date(),
             collapseTitle: '展开',
             indexTabsValue: '1',
             indexTabs: [{
@@ -107,6 +114,18 @@
             }],
             tabIndex: 2
           };
+        },
+        filters: {
+          formatDate: function (value) {
+            let date = new Date(value);
+            let year = padDate(date.getFullYear());
+            let month = padDate(date.getMonth());
+            let day = padDate(date.getDate());
+            let hours = padDate(date.getHours());
+            let minutes = padDate(date.getMinutes());
+            let seconds = padDate(date.getSeconds());
+            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+          }
         },
         methods: {
           handleOpen(key, keyPath) {
@@ -173,6 +192,17 @@
             }
             this.indexTabsValue = activeName;
             this.indexTabs = tabs.filter(tab => tab.name !== targetName);
+          }
+        },
+        mounted: function () {
+          let _this = this;
+          this.timer = setInterval(function () {
+            _this.timeStamp = new Date();
+          }, 1000)
+        },
+        beforeDestroy: function () {
+          if(this.timer) {
+            clearInterval(this.timer);
           }
         }
     }

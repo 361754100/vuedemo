@@ -4,11 +4,11 @@
       background
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
+      :current-page="pageNo"
+      :page-sizes="[50, 100, 150, 200]"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
+      :total="totalCount">
     </el-pagination>
   </div>
 </template>
@@ -19,19 +19,23 @@
         methods: {
           handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
+            // 把值回调给父组件绑定的事件
+            this.$emit('pageSizeChange', val);
           },
           handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
+            // 把值回调给父组件绑定的事件
+            this.$emit('pageNoChange', val);
           }
         },
         data() {
           return {
-            currentPage1: 5,
-            currentPage2: 5,
-            currentPage3: 5,
-            currentPage4: 4
+            pageNo: 1,
+            pageSize: 50,
+            totalCount: 0
           };
-        }
+        },
+        props: ['pageNo', 'pageSize', 'totalCount']
     }
 </script>
 

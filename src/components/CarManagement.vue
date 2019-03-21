@@ -10,7 +10,7 @@
     </div>
     <el-table
       ref="multipleTable"
-      :data="tableData3"
+      :data="tableData"
       tooltip-effect="dark"
       style="width: 100%"
       @selection-change="handleSelectionChange">
@@ -35,17 +35,20 @@
       </el-table-column>
     </el-table>
     <div style="margin-top: 20px">
-      <el-button @click="toggleSelection([tableData3[1], tableData3[2]])">切换第二、第三行的选中状态</el-button>
+      <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
       <el-button @click="toggleSelection()">取消选择</el-button>
     </div>
     <div style="margin-bottom: 0px">
-      <v-page-tool-bar></v-page-tool-bar>
+      <v-page-tool-bar :page-no="pageNo" :page-size="pageSize" :total-count="totalCount"
+       v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange"></v-page-tool-bar>
     </div>
   </div>
 </template>
 
 <script>
   import vPageToolBar from './PageToolBar'
+  import axios from 'axios'
+
   export default {
     name: "CarManagement",
     components: {
@@ -53,39 +56,13 @@
     },
     data() {
       return {
-        tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
+        pageNo: 1,
+        pageSize: 50,
+        totalCount: 0,
+        tableData: [{}],
         multipleSelection: []
       }
     },
-
     methods: {
       toggleSelection(rows) {
         if (rows) {
@@ -98,7 +75,53 @@
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
+      },
+      handlePageNoChange(pageNo) {
+        this.pageNo = pageNo;
+        this.handlePageSearch();
+      },
+      handlePageSizeChange(pageSize) {
+        this.pageSize = pageSize;
+        this.handlePageSearch();
+      },
+      handlePageSearch() {
+        let params = {
+          startTime: '2019-03-18 15:25:09',
+          endTime: '2019-03-18 19:25:09',
+          pageNo: this.pageNo,
+          pageSize: this.pageSize,
+          keywords: ''
+        }
+        let url = 'http://localhost:8081/vehiclesys/main/vehicle/page_search';
+        axios.post(
+            url,
+            params
+            //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
+            ,{
+              transformRequest:[
+              function(data){
+                let params='';
+                for(let index in data){
+                  params+=index+'='+data[index]+'&';
+                }
+                return params;
+              }
+            ]
+          })
+          .then(response => {
+            console.log('response --->'+ response);
+            this.tableData = response.data.records;
+            this.totalCount = response.data.totalCount;
+          })
+          .catch(error => {
+            console.log(error)
+            this.errored = true
+          })
+          .finally(() => this.loading = false)
       }
+    },
+    mounted() {
+      this.handlePageSearch();
     }
   }
 </script>

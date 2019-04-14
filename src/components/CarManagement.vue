@@ -2,7 +2,7 @@
   <div id="car-management">
     <div id="main-tool-bar" class="main-tool-bar-div">
       <el-button-group>
-        <el-button type="primary" size="small" icon="el-icon-circle-plus-outline">新增</el-button>
+        <el-button type="primary" size="small" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
         <el-button type="primary" size="small" icon="el-icon-edit">修改</el-button>
         <el-button type="primary" size="small" icon="el-icon-delete">删除</el-button>
       </el-button-group>
@@ -42,6 +42,44 @@
       <v-page-tool-bar :page-no="pageNo" :page-size="pageSize" :total-count="totalCount"
        v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange"></v-page-tool-bar>
     </div>
+
+
+    <el-dialog title="编辑车辆信息" :visible.sync="dialogFormVisible" align="left">
+      <el-form :model="form" ref="form">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="车辆名称：" :label-width="formLabelWidth" prop="carName">
+              <el-input v-model="form.carName" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="车牌号码：" :label-width="formLabelWidth" prop="carNo">
+              <el-input v-model="form.carNo" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner">
+              <el-input v-model="form.owner" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12"></el-col>
+        </el-row>
+
+        <!--<el-form-item label="活动区域" :label-width="formLabelWidth">-->
+          <!--<el-select v-model="form.region" placeholder="请选择活动区域">-->
+            <!--<el-option label="区域一" value="shanghai"></el-option>-->
+            <!--<el-option label="区域二" value="beijing"></el-option>-->
+          <!--</el-select>-->
+        <!--</el-form-item>-->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveEditInfo">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -60,7 +98,15 @@
         pageSize: 50,
         totalCount: 0,
         tableData: [{}],
-        multipleSelection: []
+        multipleSelection: [],
+        editType: 1,
+        dialogFormVisible: false,
+        formLabelWidth: '90px',
+        form: {
+          carName: '',
+          carNo: '',
+          owner: ''
+        }
       }
     },
     methods: {
@@ -116,6 +162,41 @@
           .catch(error => {
             console.log(error)
             this.errored = true
+          })
+          .finally(() => this.loading = false)
+      },
+      handleAdd() {
+        this.editType = 1;
+        this.dialogFormVisible = true;
+      },
+
+      saveEditInfo() {
+        let _this = this;
+        let params = {
+          carName: this.form.carName,
+          carNo: this.form.carNo,
+          owner: this.form.owner
+        }
+        let url = 'http://localhost:8081/vehiclesys/main/vehicle/add';
+        if(this.editType == 2) {
+          url = 'http://localhost:8081/vehiclesys/main/vehicle/update';
+        }
+        axios.post(
+          url,
+          JSON.stringify(params),
+          {
+            headers: {'Content-Type': 'application/json'}
+          }
+          //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
+          )
+          .then(response => {
+            let resultCode = response.data.resultCode;
+            console.log('response --->'+ resultCode);
+            _this.dialogFormVisible = false;
+            _this.$refs.form.resetFields();
+          })
+          .catch(error => {
+            console.log(error)
           })
           .finally(() => this.loading = false)
       }

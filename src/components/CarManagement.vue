@@ -19,11 +19,6 @@
         width="55">
       </el-table-column>
       <el-table-column
-        label="日期"
-        width="120">
-        <template slot-scope="scope">{{ scope.row.date }}</template>
-      </el-table-column>
-      <el-table-column
         prop="name"
         label="姓名"
         width="120">
@@ -31,7 +26,12 @@
       <el-table-column
         prop="address"
         label="地址"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        label="日期"
         show-overflow-tooltip>
+        <template slot-scope="scope">{{ scope.row.date }}</template>
       </el-table-column>
     </el-table>
     <div style="margin-top: 20px">

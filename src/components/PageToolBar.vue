@@ -30,9 +30,9 @@
         },
         data() {
           return {
-            pageNo: 1,
-            pageSize: 50,
-            totalCount: 0
+            // pageNo: 1,
+            // pageSize: 50,
+            // totalCount: 0
           };
         },
         props: ['pageNo', 'pageSize', 'totalCount']

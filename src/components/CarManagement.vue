@@ -16,22 +16,26 @@
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
+        align="center"
         width="55">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
-        width="120">
+        prop="carNo"
+        label="车牌号码"
+        width="120"
+        align="center">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址"
-        width="120">
+        prop="carName"
+        label="车辆品牌"
+        width="180"
+        align="center">
       </el-table-column>
       <el-table-column
         label="日期"
+        align="left"
         show-overflow-tooltip>
-        <template slot-scope="scope">{{ scope.row.date }}</template>
+        <template slot-scope="scope">{{ scope.row.creationTime | renderDate }}</template>
       </el-table-column>
     </el-table>
     <div style="margin-top: 20px">
@@ -82,10 +86,11 @@
 
   </div>
 </template>
-
+<script type="application/javascript" src="../assets/javascript/CommonUtils"></script>
 <script>
   import vPageToolBar from './PageToolBar'
   import axios from 'axios'
+  import formatDate from '../assets/javascript/CommonUtils'
 
   export default {
     name: "CarManagement",
@@ -107,6 +112,11 @@
           carNo: '',
           owner: ''
         }
+      }
+    },
+    filters: {
+      renderDate: function (value) {
+        return formatDate(value);
       }
     },
     methods: {
@@ -133,7 +143,7 @@
       handlePageSearch() {
         let params = {
           startTime: '2019-03-18 15:25:09',
-          endTime: '2019-03-18 19:25:09',
+          endTime: '2019-08-18 19:25:09',
           pageNo: this.pageNo,
           pageSize: this.pageSize,
           keywords: ''

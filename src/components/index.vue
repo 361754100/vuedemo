@@ -50,7 +50,7 @@
             <img src="../assets/logo_2.png"/>
           </div>
           <div id="user-banner">
-            <label style="font-family: '微软雅黑 Light'; margin-right: 15px;">{{timeStamp | formatDate}}</label>
+            <label style="font-family: '微软雅黑 Light'; margin-right: 15px;">{{timeStamp | renderDate}}</label>
             <el-button icon="el-icon-thd-tongzhi" circle></el-button>
             <el-button type="primary" icon="el-icon-thd-wode" circle></el-button>
           </div>
@@ -79,15 +79,11 @@
 </template>
 
 <script>
-  import vTest from './test.vue'
+    import vTest from './test.vue'
   import vHello from './HelloWorld.vue'
   import vBmap from './bmap.vue'
   import vCarManagement from './CarManagement.vue'
-
-  // 在月份、日期、小时等小于10 时前面补0
-  var padDate = function (value ) {
-    return value < 10 ? '0' + value : value;
-  }
+  import formatDate from '../assets/javascript/CommonUtils'
     export default {
         name: "index",
         components: {
@@ -116,15 +112,8 @@
           };
         },
         filters: {
-          formatDate: function (value) {
-            let date = new Date(value);
-            let year = padDate(date.getFullYear());
-            let month = padDate(date.getMonth());
-            let day = padDate(date.getDate());
-            let hours = padDate(date.getHours());
-            let minutes = padDate(date.getMinutes());
-            let seconds = padDate(date.getSeconds());
-            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+          renderDate: function (value) {
+            return formatDate(value);
           }
         },
         methods: {

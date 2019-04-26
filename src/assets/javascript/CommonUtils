@@ -1,0 +1,22 @@
+/**
+ * 格式化日期
+ * @param value
+ * @returns {string}
+ */
+export default function formatDate(value) {
+  let date = new Date(value);
+  let year = padDate(date.getFullYear());
+  let month = padDate(date.getMonth());
+  let day = padDate(date.getDate());
+  let hours = padDate(date.getHours());
+  let minutes = padDate(date.getMinutes());
+  let seconds = padDate(date.getSeconds());
+  return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+}
+
+/**
+ * 在月份、日期、小时等小于10 时前面补0
+  */
+function padDate(value ) {
+  return value < 10 ? '0' + value : value;
+}

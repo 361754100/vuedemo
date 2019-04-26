@@ -52,7 +52,7 @@
       <el-form :model="form" ref="form">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="车辆名称：" :label-width="formLabelWidth" prop="carName">
+            <el-form-item label="车辆品牌：" :label-width="formLabelWidth" prop="carName">
               <el-input v-model="form.carName" auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
@@ -65,7 +65,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner">
-              <el-input v-model="form.owner" auto-complete="off"></el-input>
+              <el-input v-model="form.ownerId" auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12"></el-col>
@@ -110,7 +110,7 @@
         form: {
           carName: '',
           carNo: '',
-          owner: ''
+          ownerId: ''
         }
       }
     },
@@ -185,7 +185,7 @@
         let params = {
           carName: this.form.carName,
           carNo: this.form.carNo,
-          owner: this.form.owner
+          ownerId: this.form.ownerId
         }
         let url = 'http://localhost:8081/vehiclesys/main/vehicle/add';
         if(this.editType == 2) {
@@ -201,9 +201,24 @@
           )
           .then(response => {
             let resultCode = response.data.resultCode;
-            console.log('response --->'+ resultCode);
-            _this.dialogFormVisible = false;
-            _this.$refs.form.resetFields();
+            let resultMsg = response.data.resultMsg;
+
+            if(resultCode == 100) {
+              this.$message({
+                type: 'info',
+                message: resultMsg
+              });
+              _this.dialogFormVisible = false;
+              _this.$refs.form.resetFields();
+              _this.handlePageSearch();
+            } else {
+              this.$alert(resultMsg, {
+                confirmButtonText: '确定',
+                callback: action => {
+                  //
+                }
+              });
+            }
           })
           .catch(error => {
             console.log(error)

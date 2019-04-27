@@ -12,5 +12,6 @@
 分页控件DIV
  */
 .page-tool-bar-div{
+  width: 460px;
   float: right;
 }

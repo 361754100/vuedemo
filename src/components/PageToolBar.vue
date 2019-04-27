@@ -1,6 +1,7 @@
 <template>
   <div class="block page-tool-bar-div">
-    <!--<el-button icon="el-icon-thd-refresh">默认按钮</el-button>-->
+    <el-button icon="el-icon-thd-refresh" title="刷新" @click="handleRefreshBtn"
+               style="width: 32px; height: 28px; padding: 0px; float: left; margin: 2px 5px 1px 2px;"></el-button>
     <el-pagination
       background
       @size-change="handleSizeChange"
@@ -27,6 +28,9 @@
             console.log(`当前页: ${val}`);
             // 把值回调给父组件绑定的事件
             this.$emit('pageNoChange', val);
+          },
+          handleRefreshBtn(val) {
+            this.$emit('handlePageSearch', val);
           }
         },
         data() {

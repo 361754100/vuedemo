@@ -4,7 +4,7 @@
       <el-button-group>
         <el-button type="primary" size="small" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
         <el-button type="primary" size="small" icon="el-icon-edit">修改</el-button>
-        <el-button type="primary" size="small" icon="el-icon-delete">删除</el-button>
+        <el-button type="primary" size="small" icon="el-icon-delete" @click="handleDel">删除</el-button>
       </el-button-group>
         <el-button type="primary" size="small" icon="el-icon-search">搜索</el-button>
     </div>
@@ -16,6 +16,7 @@
       @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
+        prop="id"
         align="center"
         width="55">
       </el-table-column>
@@ -190,7 +191,39 @@
         this.editType = 1;
         this.dialogFormVisible = true;
       },
+      handleUpdate() {
+        this.editType = 2;
+        let selectedLen = this.multipleSelection.length;
+        if(selectedLen > 1 || selectedLen == 0) {
+          this.$alert('请选择要一条记录', {
+            confirmButtonText: '确定',
+            callback: action => {
+              //
+            }
+          });
+          return;
+        }
+        this.dialogFormVisible = true;
 
+        //...
+      },
+      handleDel() {
+        let selectedLen = this.multipleSelection.length;
+        if(selectedLen == 0) {
+          this.$alert('请选择要删除的数据', {
+            confirmButtonText: '确定',
+            callback: action => {
+              //
+            }
+          });
+          return;
+        }
+        let rowIds = [];
+        for(let i = 0;i<selectedLen; i++) {
+          rowIds.push(this.multipleSelection[i].id);
+        }
+        alert('multipleSelection --->'+ rowIds );
+      },
       saveEditInfo() {
         let _this = this;
         let params = {

@@ -26,6 +26,12 @@
         align="center">
       </el-table-column>
       <el-table-column
+        prop="carColor"
+        label="车辆颜色"
+        width="150"
+        align="center">
+      </el-table-column>
+      <el-table-column
         prop="carName"
         label="车辆品牌"
         width="180"
@@ -44,7 +50,7 @@
     </div>
     <div style="margin-bottom: 0px">
       <v-page-tool-bar :page-no="pageNo" :page-size="pageSize" :total-count="totalCount"
-       v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange"></v-page-tool-bar>
+       v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange" v-on:pageRefresh="handlePageSearch"></v-page-tool-bar>
     </div>
 
 
@@ -64,11 +70,15 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="车身颜色：" :label-width="formLabelWidth" prop="owner">
+              <el-input v-model="form.carColor" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner">
               <el-input v-model="form.ownerId" auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12"></el-col>
         </el-row>
 
         <!--<el-form-item label="活动区域" :label-width="formLabelWidth">-->
@@ -106,10 +116,11 @@
         multipleSelection: [],
         editType: 1,
         dialogFormVisible: false,
-        formLabelWidth: '90px',
+        formLabelWidth: '100px',
         form: {
           carName: '',
           carNo: '',
+          carColor: '',
           ownerId: ''
         }
       }
@@ -185,6 +196,7 @@
         let params = {
           carName: this.form.carName,
           carNo: this.form.carNo,
+          carColor: this.form.carColor,
           ownerId: this.form.ownerId
         }
         let url = 'http://localhost:8081/vehiclesys/main/vehicle/add';
@@ -205,7 +217,7 @@
 
             if(resultCode == 100) {
               this.$message({
-                type: 'info',
+                type: 'success',
                 message: resultMsg
               });
               _this.dialogFormVisible = false;

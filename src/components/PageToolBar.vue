@@ -29,8 +29,8 @@
             // 把值回调给父组件绑定的事件
             this.$emit('pageNoChange', val);
           },
-          handleRefreshBtn(val) {
-            this.$emit('handlePageSearch', val);
+          handleRefreshBtn() {
+            this.$emit('pageRefresh');
           }
         },
         data() {

@@ -1,12 +1,28 @@
 <template>
   <div id="car-management">
     <div id="main-tool-bar" class="main-tool-bar-div">
+      <el-date-picker
+        v-model="search_form.defaultDateValue"
+        type="daterange"
+        :picker-options="search_form.pickerOptions"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
+        size="medium"
+        align="right">
+      </el-date-picker>
+      <el-input v-model="search_form.keywords" size="medium" auto-complete="off" placeholder="车牌关键字：粤S88888" style="width: 250px"></el-input>
+
       <el-button-group>
-        <el-button type="primary" size="small" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
-        <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate">修改</el-button>
-        <el-button type="primary" size="small" icon="el-icon-delete" @click="handleDel">删除</el-button>
+        <el-button type="primary" size="medium" icon="el-icon-search" @click="handlePageSearch">搜索</el-button>
+        <el-button type="primary" size="medium" icon="el-icon-time" @click="resetSearch_form">重置</el-button>
       </el-button-group>
-        <el-button type="primary" size="small" icon="el-icon-search">搜索</el-button>
+
+      <el-button-group>
+        <el-button type="primary" size="medium" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
+        <el-button type="primary" size="medium" icon="el-icon-edit" @click="handleUpdate">修改</el-button>
+        <el-button type="primary" size="medium" icon="el-icon-delete" @click="handleDel">删除</el-button>
+      </el-button-group>
     </div>
     <el-table
       ref="multipleTable"
@@ -51,42 +67,42 @@
     </div>
     <div style="margin-bottom: 0px">
       <v-page-tool-bar :page-no="pageNo" :page-size="pageSize" :total-count="totalCount"
-       v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange" v-on:pageRefresh="handlePageSearch"></v-page-tool-bar>
+                       v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange" v-on:pageRefresh="handlePageSearch"></v-page-tool-bar>
     </div>
 
 
     <el-dialog title="编辑车辆信息" :visible.sync="dialogFormVisible" align="left">
-      <el-form :model="form" ref="form">
+      <el-form :model="edit_form" ref="edit_form">
         <el-row>
           <el-col :span="12">
             <el-form-item label="车辆品牌：" :label-width="formLabelWidth" prop="carName">
-              <el-input v-model="form.carName" auto-complete="off" placeholder="例如：Jeep自由光"></el-input>
+              <el-input v-model="edit_form.carName" auto-complete="off" placeholder="例如：Jeep自由光"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="车牌号码：" :label-width="formLabelWidth" prop="carNo">
-              <el-input v-model="form.carNo" auto-complete="off" placeholder="例如：粤S00888"></el-input>
+              <el-input v-model="edit_form.carNo" auto-complete="off" placeholder="例如：粤S00888"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="车身颜色：" :label-width="formLabelWidth" prop="owner">
-              <el-input v-model="form.carColor" auto-complete="off" placeholder="例如：蓝色"></el-input>
+            <el-form-item label="车身颜色：" :label-width="formLabelWidth" prop="carColor">
+              <el-input v-model="edit_form.carColor" auto-complete="off" placeholder="例如：蓝色"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner" >
-              <el-input v-model="form.ownerId" auto-complete="off" placeholder="例如：王先生"></el-input>
+              <el-input v-model="edit_form.ownerId" auto-complete="off" placeholder="例如：王先生"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
         <!--<el-form-item label="活动区域" :label-width="formLabelWidth">-->
-          <!--<el-select v-model="form.region" placeholder="请选择活动区域">-->
-            <!--<el-option label="区域一" value="shanghai"></el-option>-->
-            <!--<el-option label="区域二" value="beijing"></el-option>-->
-          <!--</el-select>-->
+        <!--<el-select v-model="edit_form.region" placeholder="请选择活动区域">-->
+        <!--<el-option label="区域一" value="shanghai"></el-option>-->
+        <!--<el-option label="区域二" value="beijing"></el-option>-->
+        <!--</el-select>-->
         <!--</el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -119,12 +135,43 @@
         editType: 1,
         dialogFormVisible: false,
         formLabelWidth: '100px',
-        form: {
+        edit_form: {
           recordId: '',
           carName: '',
           carNo: '',
           carColor: '',
           ownerId: ''
+        },
+        search_form: {
+          pickerOptions: {
+            shortcuts: [{
+              text: '最近一周',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                picker.$emit('pick', [start, end]);
+              }
+            }, {
+              text: '最近一个月',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                picker.$emit('pick', [start, end]);
+              }
+            }, {
+              text: '最近三个月',
+              onClick(picker) {
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                picker.$emit('pick', [start, end]);
+              }
+            }]
+          },
+          defaultDateValue: [],
+          keywords: ''
         }
       }
     },
@@ -156,11 +203,11 @@
       },
       handlePageSearch() {
         let params = {
-          startTime: '2019-03-18 15:25:09',
-          endTime: '2019-08-18 19:25:09',
+          startTime: formatDate(this.search_form.defaultDateValue[0].getTime()),
+          endTime: formatDate(this.search_form.defaultDateValue[1].getTime()).substring(0, 11)+ '23:59:59',
           pageNo: this.pageNo,
           pageSize: this.pageSize,
-          keywords: ''
+          keywords: this.search_form.keywords
         }
         let url = api_utils.carinfo_api.pagesearch_url;
         axios.post(
@@ -205,11 +252,11 @@
           });
           return;
         }
-        this.form.recordId = this.multipleSelection[0].id;
-        this.form.carColor = this.multipleSelection[0].carColor;
-        this.form.carName = this.multipleSelection[0].carName;
-        this.form.carNo = this.multipleSelection[0].carNo;
-        this.form.ownerId = 0; ///...
+        this.edit_form.recordId = this.multipleSelection[0].id;
+        this.edit_form.carColor = this.multipleSelection[0].carColor;
+        this.edit_form.carName = this.multipleSelection[0].carName;
+        this.edit_form.carNo = this.multipleSelection[0].carNo;
+        this.edit_form.ownerId = 0; ///...
 
         this.dialogFormVisible = true;
       },
@@ -254,24 +301,24 @@
                 }
                 //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
               ).then(response => {
-                  let resultCode = response.data.resultCode;
-                  let resultMsg = response.data.resultMsg;
-                  done();
-                  if (resultCode == 100) {
-                    this.$message({
-                      type: 'success',
-                      message: resultMsg
-                    });
-                    _this.handlePageSearch();
-                  } else {
-                    this.$alert(resultMsg, {
-                      confirmButtonText: '确定',
-                      callback: action => {
-                        //
-                      }
-                    });
-                  }
-                })
+                let resultCode = response.data.resultCode;
+                let resultMsg = response.data.resultMsg;
+                done();
+                if (resultCode == 100) {
+                  this.$message({
+                    type: 'success',
+                    message: resultMsg
+                  });
+                  _this.handlePageSearch();
+                } else {
+                  this.$alert(resultMsg, {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                      //
+                    }
+                  });
+                }
+              })
                 .catch(error => {
                   console.log(error)
                 })
@@ -290,11 +337,11 @@
       saveEditInfo() {
         let _this = this;
         let params = {
-          carName: this.form.carName,
-          carNo: this.form.carNo,
-          carColor: this.form.carColor,
-          ownerId: this.form.ownerId,
-          recordId: this.form.recordId
+          carName: this.edit_form.carName,
+          carNo: this.edit_form.carNo,
+          carColor: this.edit_form.carColor,
+          ownerId: this.edit_form.ownerId,
+          recordId: this.edit_form.recordId
         }
         let url = api_utils.carinfo_api.add_url;
         if (this.editType == 2) {
@@ -318,8 +365,8 @@
                 message: resultMsg
               });
               _this.dialogFormVisible = false;
-              // _this.$ref.form.resetFields();
-              _this.resetForm();
+              // _this.$ref.edit_form.resetFields();
+              _this.resetEdit_form();
               _this.handlePageSearch();
             } else {
               this.$alert(resultMsg, {
@@ -335,15 +382,31 @@
           })
           .finally(() => this.loading = false)
       },
-      resetForm() {
-        this.form.carName = '';
-        this.form.carNo = '';
-        this.form.ownerId = '';
-        this.form.recordId = '';
-        this.form.carColor = '';
+      resetSearch_form() {
+        this.search_form.keywords = '';
+        const end = new Date();
+        const start = new Date();
+        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+        this.search_form.defaultDateValue = [];
+        this.search_form.defaultDateValue.push(start);
+        this.search_form.defaultDateValue.push(end);
+        this.handlePageSearch();
+      },
+      resetEdit_form() {
+        this.edit_form.carName = '';
+        this.edit_form.carNo = '';
+        this.edit_form.ownerId = '';
+        this.edit_form.recordId = '';
+        this.edit_form.carColor = '';
+        // this.$ref.edit_form.resetFields();
       }
     },
     mounted() {
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+      this.search_form.defaultDateValue.push(start);
+      this.search_form.defaultDateValue.push(end);
       this.handlePageSearch();
     }
   }

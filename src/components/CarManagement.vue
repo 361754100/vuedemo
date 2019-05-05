@@ -51,7 +51,7 @@
       <el-table-column
         prop="carName"
         label="车辆品牌"
-        width="180"
+        width="250"
         align="center">
       </el-table-column>
       <el-table-column
@@ -61,11 +61,11 @@
         <template slot-scope="scope">{{ scope.row.creationTime | renderDate }}</template>
       </el-table-column>
     </el-table>
-    <div style="margin-top: 20px">
+    <!--<div style="margin-top: 20px">
       <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
       <el-button @click="toggleSelection()">取消选择</el-button>
-    </div>
-    <div style="margin-bottom: 0px">
+    </div>-->
+    <div style="margin: 5px 0px 0px 0px">
       <v-page-tool-bar :page-no="pageNo" :page-size="pageSize" :total-count="totalCount"
                        v-on:pageNoChange="handlePageNoChange" v-on:pageSizeChange="handlePageSizeChange" v-on:pageRefresh="handlePageSearch"></v-page-tool-bar>
     </div>

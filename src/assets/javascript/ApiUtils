@@ -1,0 +1,22 @@
+/**
+ * 车辆信息API
+ * @type {Object}
+ */
+const carinfo_api = new Object();
+carinfo_api.token = '';
+carinfo_api.add_url = 'http://localhost:8081/vehiclesys/main/vehicle/add';
+carinfo_api.update_url = 'http://localhost:8081/vehiclesys/main/vehicle/update';
+carinfo_api.delete_url = 'http://localhost:8081/vehiclesys/main/vehicle/delete';
+carinfo_api.pagesearch_url = 'http://localhost:8081/vehiclesys/main/vehicle/page_search';
+
+/**
+ * GPS服务
+ * @type {Object}
+ */
+const gps_api = new Object();
+gps_api.token = '';
+
+export default {
+  carinfo_api,
+  gps_api
+}

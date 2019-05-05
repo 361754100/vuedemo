@@ -3,7 +3,7 @@
     <div id="main-tool-bar" class="main-tool-bar-div">
       <el-button-group>
         <el-button type="primary" size="small" icon="el-icon-circle-plus-outline" @click="handleAdd">新增</el-button>
-        <el-button type="primary" size="small" icon="el-icon-edit">修改</el-button>
+        <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate">修改</el-button>
         <el-button type="primary" size="small" icon="el-icon-delete" @click="handleDel">删除</el-button>
       </el-button-group>
         <el-button type="primary" size="small" icon="el-icon-search">搜索</el-button>
@@ -60,24 +60,24 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="车辆品牌：" :label-width="formLabelWidth" prop="carName">
-              <el-input v-model="form.carName" auto-complete="off"></el-input>
+              <el-input v-model="form.carName" auto-complete="off" placeholder="例如：Jeep自由光"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="车牌号码：" :label-width="formLabelWidth" prop="carNo">
-              <el-input v-model="form.carNo" auto-complete="off"></el-input>
+              <el-input v-model="form.carNo" auto-complete="off" placeholder="例如：粤S00888"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="车身颜色：" :label-width="formLabelWidth" prop="owner">
-              <el-input v-model="form.carColor" auto-complete="off"></el-input>
+              <el-input v-model="form.carColor" auto-complete="off" placeholder="例如：蓝色"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner">
-              <el-input v-model="form.ownerId" auto-complete="off"></el-input>
+            <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner" >
+              <el-input v-model="form.ownerId" auto-complete="off" placeholder="例如：王先生"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -102,6 +102,7 @@
   import vPageToolBar from './PageToolBar'
   import axios from 'axios'
   import formatDate from '../assets/javascript/CommonUtils'
+  import api_utils from '../assets/javascript/ApiUtils'
 
   export default {
     name: "CarManagement",
@@ -119,6 +120,7 @@
         dialogFormVisible: false,
         formLabelWidth: '100px',
         form: {
+          recordId: '',
           carName: '',
           carNo: '',
           carColor: '',
@@ -160,24 +162,24 @@
           pageSize: this.pageSize,
           keywords: ''
         }
-        let url = 'http://localhost:8081/vehiclesys/main/vehicle/page_search';
+        let url = api_utils.carinfo_api.pagesearch_url;
         axios.post(
-            url,
-            params
-            //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
-            ,{
-              transformRequest:[
-              function(data){
-                let params='';
-                for(let index in data){
-                  params+=index+'='+data[index]+'&';
+          url,
+          params
+          //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
+          , {
+            transformRequest: [
+              function (data) {
+                let params = '';
+                for (let index in data) {
+                  params += index + '=' + data[index] + '&';
                 }
                 return params;
               }
             ]
           })
           .then(response => {
-            console.log('response --->'+ response);
+            console.log('response --->' + response);
             this.tableData = response.data.records;
             this.totalCount = response.data.totalCount;
           })
@@ -194,7 +196,7 @@
       handleUpdate() {
         this.editType = 2;
         let selectedLen = this.multipleSelection.length;
-        if(selectedLen > 1 || selectedLen == 0) {
+        if (selectedLen > 1 || selectedLen == 0) {
           this.$alert('请选择要一条记录', {
             confirmButtonText: '确定',
             callback: action => {
@@ -203,14 +205,19 @@
           });
           return;
         }
-        this.dialogFormVisible = true;
+        this.form.recordId = this.multipleSelection[0].id;
+        this.form.carColor = this.multipleSelection[0].carColor;
+        this.form.carName = this.multipleSelection[0].carName;
+        this.form.carNo = this.multipleSelection[0].carNo;
+        this.form.ownerId = 0; ///...
 
-        //...
+        this.dialogFormVisible = true;
       },
       handleDel() {
         let selectedLen = this.multipleSelection.length;
-        if(selectedLen == 0) {
+        if (selectedLen == 0) {
           this.$alert('请选择要删除的数据', {
+            title: '温馨提示',
             confirmButtonText: '确定',
             callback: action => {
               //
@@ -219,10 +226,66 @@
           return;
         }
         let rowIds = [];
-        for(let i = 0;i<selectedLen; i++) {
+        for (let i = 0; i < selectedLen; i++) {
           rowIds.push(this.multipleSelection[i].id);
         }
-        alert('multipleSelection --->'+ rowIds );
+        let _this = this;
+        let params = {
+          ids: rowIds
+        }
+
+        this.$msgbox({
+          title: '温馨提示',
+          message: '确定要删除选中的数据？',
+          showCancelButton: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              instance.confirmButtonLoading = true;
+              instance.confirmButtonText = '执行中...';
+
+              let url = api_utils.carinfo_api.delete_url;
+              axios.post(
+                url,
+                JSON.stringify(params),
+                {
+                  headers: {'Content-Type': 'application/json'}
+                }
+                //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
+              ).then(response => {
+                  let resultCode = response.data.resultCode;
+                  let resultMsg = response.data.resultMsg;
+                  done();
+                  if (resultCode == 100) {
+                    this.$message({
+                      type: 'success',
+                      message: resultMsg
+                    });
+                    _this.handlePageSearch();
+                  } else {
+                    this.$alert(resultMsg, {
+                      confirmButtonText: '确定',
+                      callback: action => {
+                        //
+                      }
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+                .finally(() => instance.confirmButtonLoading = false)
+            } else {
+              done();
+            }
+          }
+        }).then(action => {
+          // this.$message({
+          //   type: 'info',
+          //   message: 'action: ' + action
+          // });
+        });
       },
       saveEditInfo() {
         let _this = this;
@@ -230,11 +293,12 @@
           carName: this.form.carName,
           carNo: this.form.carNo,
           carColor: this.form.carColor,
-          ownerId: this.form.ownerId
+          ownerId: this.form.ownerId,
+          recordId: this.form.recordId
         }
-        let url = 'http://localhost:8081/vehiclesys/main/vehicle/add';
-        if(this.editType == 2) {
-          url = 'http://localhost:8081/vehiclesys/main/vehicle/update';
+        let url = api_utils.carinfo_api.add_url;
+        if (this.editType == 2) {
+          url = api_utils.carinfo_api.update_url;
         }
         axios.post(
           url,
@@ -243,18 +307,19 @@
             headers: {'Content-Type': 'application/json'}
           }
           //方式2通过transformRequest方法发送数据，本质还是将数据拼接成字符串
-          )
+        )
           .then(response => {
             let resultCode = response.data.resultCode;
             let resultMsg = response.data.resultMsg;
 
-            if(resultCode == 100) {
+            if (resultCode == 100) {
               this.$message({
                 type: 'success',
                 message: resultMsg
               });
               _this.dialogFormVisible = false;
-              _this.$refs.form.resetFields();
+              // _this.$ref.form.resetFields();
+              _this.resetForm();
               _this.handlePageSearch();
             } else {
               this.$alert(resultMsg, {
@@ -269,6 +334,13 @@
             console.log(error)
           })
           .finally(() => this.loading = false)
+      },
+      resetForm() {
+        this.form.carName = '';
+        this.form.carNo = '';
+        this.form.ownerId = '';
+        this.form.recordId = '';
+        this.form.carColor = '';
       }
     },
     mounted() {

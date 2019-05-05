@@ -245,6 +245,7 @@
         let selectedLen = this.multipleSelection.length;
         if (selectedLen > 1 || selectedLen == 0) {
           this.$alert('请选择要一条记录', {
+            title: '温馨提示',
             confirmButtonText: '确定',
             callback: action => {
               //

@@ -92,8 +92,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="车主：" :label-width="formLabelWidth" prop="owner" >
-              <el-input v-model="edit_form.ownerId" auto-complete="off" placeholder="例如：王先生"></el-input>
+            <el-form-item label="车主ID：" :label-width="formLabelWidth" prop="owner" >
+              <el-input v-model="edit_form.ownerId" auto-complete="off" placeholder="例如：101"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
